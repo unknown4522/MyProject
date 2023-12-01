@@ -1,0 +1,234 @@
+﻿@using InventoryDesign.Models;
+@model Modelall
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>@ViewBag.Title</title>
+    <!-- Include Bootstrap CSS -->
+    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Include your custom CSS file here -->
+    
+    <style>
+        body {
+            background-image: url('https://articles.cyzerg.com/hubfs/Warehouse%20Inventory%20Management.jpg');
+        }
+
+        /* Transparent Navbar */
+        .navbar {
+            background-color: transparent !important;
+        }
+
+        /* Remove "Your Logo" Text */
+        .navbar-brand {
+            display: none;
+        }
+
+        /* Red chatbox */
+        .red-chatbox {
+            background-color: red;
+            color: white;
+            padding: 10px;
+            border-radius: 5px;
+            text-align: center;
+        }
+
+        /* Error message style */
+        .error-message {
+            color: red;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+
+    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon bg-success"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav ml-auto">
+                <li class="nav-item">
+                    <button type="button" class="btn btn-dark" data-toggle="modal" data-target="#logmodal">LOG IN</button>
+                </li>
+                <li class="nav-item">
+                    <button type="button" class="btn btn-dark btn-transparent" data-toggle="modal" data-target="#signInModal">SIGN UP</button>
+                </li>
+            </ul>
+        </div>
+    </nav>
+
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-md-6 col-sm-12">
+                <img src="~/Content/gsc-logo.png" />
+            </div>
+        </div>
+    </div>
+
+    <!-- Your login modal -->
+    <div class="modal fade" id="logmodal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h1 class="modal-title fs-5 text-center" id="exampleModalLabel">LOG IN</h1>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body text-center">
+                    @using (Html.BeginForm("loginaccount", "Inventory", FormMethod.Post))
+                    {
+                        <div class="container">
+                            <div class="row">
+                                <div class="col-md-6 col-sm-12">
+                                    <div class="form-group">
+                                        <label for="add_user_name">USER NAME:</label>
+                                        <input type="text" class="form-control" id="add_user_name" name="add_user_name" autocomplete="off" required />
+                                    </div>
+                                </div>
+                                <div class="col-md-6 col-sm-12">
+                                    <div class="form-group">
+                                        <label for="add_password">PASSWORD:</label>
+                                        <input type="password" class="form-control" id="add_password" name="add_password" autocomplete="off" required />
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="modal-footer">
+                                <button class="btn btn-sm btn-primary float-end mt-2" onclick="checkInputRooms()" href="@Url.Action("Dashboard", "Inventory", new { role = ViewBag.role })">LOG IN</button>
+                                <br />
+                                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                            </div>
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+
+    <!-- Your signup modal -->
+    <div class="modal fade" id="signInModal" tabindex="-1" role="dialog" aria-labelledby="signInModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="signInModalLabel">CREATE ACCOUNT</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                @using (Html.BeginForm("createaccount", "Inventory", FormMethod.Post, new { @class = "mt-4" }))
+                {
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label for="employee_firstname" class="form-label">First Name</label>
+                                <input type="text" class="form-control" id="employee_firstname" name="employee_firstname" placeholder="Enter your first name" required>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label for="employee_last_name" class="form-label">Last Name</label>
+                                <input type="text" class="form-control" id="employee_last_name" name="employee_last_name" placeholder="Enter your last name" required>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label for="employee_user_name" class="form-label">User Name</label>
+                                <input type="text" class="form-control" id="employee_user_name" name="employee_user_name" placeholder="Enter your username" required>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label for="employee_password" class="form-label">Password</label>
+                                <input type="password" class="form-control" id="employee_password" name="employee_password" placeholder="Enter your password" required>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label for="employee_assign_campus" class="form-label">Campus Assign</label>
+                                <select class="form-select" id="employee_assign_campus" name="employee_assign_campus" required>
+                                    <option value="" disabled selected hidden>Choose Assign Campus</option>
+                                    @foreach (var item in Model.Allcampus)
+                                    {
+                                        <option value="@item.campus_name">@item.campus_name</option>
+                                    }
+                                </select>
+                            </div>
+                        </div>
+                        <!-- Add other fields within the grid structure as needed -->
+                    </div>
+                    <div class="modal-footer">
+                        <button type="submit" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                        <button type="submit" class="btn btn-primary">Sign Up</button>
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+    <!-- Your error modal -->
+    <div id="errorModal" class="modal fade" tabindex="-1" role="dialog">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Error</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <p id="errorMessage"></p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Red chatbox and error message -->
+    <div id="chatbox" class="red-chatbox" style="display: none;">
+        <p class="error-message" id="errorMessage">Incorrect username or password</p>
+    </div>
+
+    <!-- Include Bootstrap JS and jQuery -->
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <script>
+        // Placeholder functions
+        function checkInputRooms() {
+            // Implement your login logic here
+            var username = document.getElementById('add_user_name').value;
+            var password = document.getElementById('add_password').value;
+
+            // Example of login logic (replace with your actual logic)
+            if (username === 'correctusername' && password === 'correctpassword') {
+                // Successful login, hide the chatbox
+                document.getElementById('chatbox').style.display = 'none';
+            } else {
+                // Failed login, show the chatbox and error message
+                document.getElementById('chatbox').style.display = 'block';
+            }
+        }
+
+        function signup() {
+            // Implement your signup logic here
+        }
+    </script>
+</body>
+</html>

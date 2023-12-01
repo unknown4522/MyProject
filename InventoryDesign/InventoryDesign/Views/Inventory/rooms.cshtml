@@ -1,0 +1,313 @@
+﻿@using InventoryDesign.Models;
+@model Modelall
+@{
+    ViewBag.Title = "rooms";
+
+}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Your Page Title</title>
+
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+    <style>
+        .hover-scale-2:hover {
+            transform: scale(1.3);
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container-fluid mt-3">
+        <div class="row">
+
+            <!-- Sidebar -->
+            <nav id="sidebar" class="col-md-3 col-lg-3 d-md-block bg-light sidebar">
+                <div class="position-sticky">
+                    <hr>
+
+                    <ul class="nav flex-column">
+                        <li class="nav-item">
+                            <br /><br /><br />
+                            <a class="nav-link hover-scale-2" href="@Url.Action("campus", "Inventory", new { })" role="button">BACK</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link hover-scale-2" href="@Url.Action("item_list", "Inventory", new { campus_name = ViewBag.campus_name })" role="button">ITEM LIST</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link hover-scale-2" href="@Url.Action("employeelist", "Inventory", new { campus_name = ViewBag.campus_name })">Employee List</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link hover-scale-2" href="@Url.Action("itemhistory", "Inventory", new { campus_name = ViewBag.campus_name })">Item Records</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link hover-scale-2" href="@Url.Action("brandlist", "Inventory", new { campus_name = ViewBag.campus_name })">Brand List</a>
+                        </li>
+
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle hover-scale-2" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                Apparel
+                            </a>
+                            <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                                <a class="dropdown-item hover-scale-2" href="@Url.Action("uniform_stock", "Inventory", new { campus_name = ViewBag.campus_name })">Apparel List</a>
+                                <a class="dropdown-item hover-scale-2" href="@Url.Action("grade_list", "Inventory", new { campus_name = ViewBag.campus_name })">Grade List</a>
+                                <a class="dropdown-item hover-scale-2" href="@Url.Action("size_list", "Inventory", new { campus_name = ViewBag.campus_name })">Size List</a>
+                                <a class="dropdown-item hover-scale-2" href="@Url.Action("Claim_stub", "Inventory", new { campus_name = ViewBag.campus_name })">Claim Inventory</a>
+                                <a class="dropdown-item hover-scale-2" href="@Url.Action("Clothes_list", "Inventory", new { campus_name = ViewBag.campus_name })">Apparel Type</a>
+                                <a class="dropdown-item hover-scale-2" href="@Url.Action("clotheslog", "Inventory", new { campus_name = ViewBag.campus_name })">Apparel Records</a>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+            </nav>
+
+
+            <!-- Main Content -->
+            <main class="col-lg-9">
+                <div class="sticky-xl-top">
+                    <br />
+                    <h2 id="room-label" class="text-center">@ViewBag.campus_name</h2>
+                    <h2 class="text-center mt-4">Room List</h2>
+
+                    <button type="button" class="btn btn-success mb-2 hover-scale-2" data-toggle="modal" data-target="#createroombtn">ADD</button>
+
+                    <div class="table-responsive">
+                        <table class="table table-striped table-hover table-bordered">
+                            <thead>
+                                <tr>
+                                    <th>ROOM NAME</th>
+                                    <th>FLOOR LEVEL</th>
+                                    <th>ROOM DESCRIPTION</th>
+                                    <th>ACTION</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var item in Model.Roomlist)
+                                {
+                                    <tr class="clickable-row hover-scale" data-href="@Url.Action("insideroom", "Inventory", new { room_name = item.room_name, campus_name = ViewBag.campus_name })">
+                                        <td>@Html.DisplayFor(modelItem => item.room_name)</td>
+                                        <td>@Html.DisplayFor(modelItem => item.floorlevel)</td>
+                                        <td>@Html.DisplayFor(modelItem => item.room_description)</td>
+                                        <td>
+                                            <button class="btn btn-secondary edit-button hover-scale"
+                                                    data-bs-toggle="modal"
+                                                    data-bs-target="#updateroom"
+                                                    onclick="setoUPDATErooms('@item.room_name', '@item.room_description', '@item.floorlevel', '@item.room_id'); event.stopPropagation();"
+                                                    data-room-id="@item.room_id">
+                                                EDIT
+                                            </button>
+                                        </td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </main>
+        </div>
+    </div>
+
+    <!-- ADD ROOMS Modal -->
+    <div class="modal fade" id="createroombtn" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h1 class="modal-title fs-5" id="exampleModalLabel">ADD ROOM</h1>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="card">
+                        <div class="card-body">
+                            <div class="form-group">
+                                <label for="add_room_name">ROOM NAME:</label>
+                                <input type="text" class="form-control" id="add_room_name" name="add_room_name" autocomplete="off" required />
+                            </div>
+
+                            <div class="form-group">
+                                <label for="add_floor_level">Floor level:</label>
+                                <select class="form-select" id="add_floor_level" name="add_floor_level" required>
+                                    <option value="" disabled selected hidden>Choose FLOOR LEVEL</option>
+                                    <option value="1ST FLOOR">1ST FLOOR</option>
+                                    <option value="2ND FLOOR">2ND FLOOR</option>
+                                    <option value="3RD FLOOR">3RD FLOOR</option>
+                                    <option value="4TH FLOOR">4TH FLOOR</option>
+                                    <option value="5TH FLOOR">5TH FLOOR</option>
+                                    <option value="ROOFTOP">ROOFTOP</option>
+                                </select>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="add_room_description">ROOM DESCRIPTION:</label>
+                                <input type="text" class="form-control" id="add_room_description" name="add_room_description" autocomplete="off" />
+                            </div>
+
+                            <div class="form-group">
+                                <input type="text" class="form-control visually-hidden" id="add_campus_name" value="@ViewBag.campus_name" name="add_campus_name" autocomplete="off" readonly />
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button class="btn btn-primary" id="addroombtn">ADD ROOM</button>
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- UPDATE ROOMS Modal -->
+    <div class="modal fade" id="updateroom" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h1 class="modal-title fs-5" id="exampleModalLabel">UPDATE</h1>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    @using (Html.BeginForm("updaterooms", "Inventory", FormMethod.Post))
+                    {
+                        <div class="card">
+                            <div class="card-body">
+                                <div class="form-group">
+                                    <label for="update_room_name">ROOM NAME:</label>
+                                    <input type="text" class="form-control" id="update_room_name" name="update_room_name" autocomplete="off" />
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="update_floorlevel">FLOOR LEVEL:</label>
+                                    <select class="form-select" id="update_floorlevel" name="update_floorlevel" required>
+                                        <option value="" disabled selected hidden>Choose FLOOR LEVEL</option>
+                                        <option value="1ST FLOOR">1ST FLOOR</option>
+                                        <option value="2ND FLOOR">2ND FLOOR</option>
+                                        <option value="3RD FLOOR">3RD FLOOR</option>
+                                        <option value="4TH FLOOR">4TH FLOOR</option>
+                                        <option value="5TH FLOOR">5TH FLOOR</option>
+                                        <option value="ROOFTOP">ROOFTOP</option>
+                                    </select>
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="update_room_description">ROOM DESCRIPTION:</label>
+                                    <input type="text" class="form-control" id="update_room_description" name="update_room_description" autocomplete="off" />
+                                </div>
+                                <div class="form-group">
+                                    <input type="hidden" class="form-control" id="update_room_id" name="update_room_id" autocomplete="off" />
+                                </div>
+
+                                <div class="modal-footer">
+                                    <button class="btn btn-sm btn-primary float-end mt-2" onclick="checkinputrooms()">SAVE CHANGES</button>
+                                    <br />
+                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                </div>
+                            </div>
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Error Modal Dialog -->
+    <div class="modal fade" id="model_error" tabindex="-1" aria-labelledby="model_errorLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-sm">
+            <div class="modal-content">
+                <div class="modal-header bg-danger text-white">
+                    <h5 class="modal-title" id="model_errorLabel">Error</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <p id="error_message"></p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+    <script>
+        $(document).ready(function () {
+            $("#addroombtn").click(function () {
+                $("#error_message").text("");
+                var add_room_name = $("#add_room_name").val();
+                if (add_room_name === '') {
+                    showErrorMessage("Please supply a Room Name.");
+                    return;
+                }
+                var add_floor_level = $("#add_floor_level").val();
+                if (add_floor_level === null || add_floor_level === '') {
+                    showErrorMessage("Please choose a valid Floor Level.");
+                    return;
+                }
+                var add_room_description = $("#add_room_description").val();
+                var add_campus_name = $("#add_campus_name").val();
+
+                var addroomdata = {
+                    add_room_name: add_room_name,
+                    add_floor_level: add_floor_level,
+                    add_room_description: add_room_description,
+                    add_campus_name: add_campus_name
+                };
+
+                $.ajax({
+                    type: "POST",
+                    url: "/Inventory/createrooms",
+                    data: addroomdata,
+                    success: function () {
+                        location.reload();
+                    },
+                    error: function () {
+                        showErrorMessage("An error occurred while adding the Room item");
+                    },
+                });
+            });
+
+            function showErrorMessage(message) {
+                $("#error_message").text(message);
+                $("#model_error").modal("show");
+            }
+        });
+    </script>
+
+    <script>
+        // JavaScript function to handle row click event and navigate to the specified URL
+        document.addEventListener("DOMContentLoaded", function () {
+            const rows = document.querySelectorAll(".clickable-row");
+
+            rows.forEach(function (row) {
+                row.addEventListener("click", function () {
+                    const href = this.getAttribute("data-href");
+                    if (href) {
+                        window.location.href = href;
+                    }
+                });
+            });
+        });
+
+        // JavaScript function to set values in the update room modal
+        function setoUPDATErooms(room_name, room_description, floorlevel, room_id) {
+            document.getElementById('update_room_name').value = room_name;
+            document.getElementById('update_floorlevel').value = floorlevel;
+            document.getElementById('update_room_description').value = room_description;
+
+            // Get the room_id from the data-room-id attribute
+            var roomIdInput = document.getElementById('update_room_id');
+            roomIdInput.value = room_id;
+        }
+    </script>
+
+</body>
+</html>
+
+
+
+   

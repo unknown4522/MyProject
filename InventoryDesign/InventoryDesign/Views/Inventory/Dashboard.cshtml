@@ -1,0 +1,82 @@
+﻿@using InventoryDesign.Models;
+@model Modelall
+@{
+    ViewBag.Title = "Dashboard";
+}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+        }
+
+        .custom-size {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            object-fit: cover;
+            margin-bottom: 15px;
+        }
+
+        .dashboard-content {
+            padding: 20px;
+        }
+
+        /* Customize your dashboard content styles below */
+
+        .dashboard-item {
+            margin-bottom: 20px;
+        }
+
+            .dashboard-item h4 {
+                color: #333;
+            }
+        
+    </style>
+    <title>@ViewBag.Title</title>
+</head>
+<body>
+
+    <div class="container mt-4">
+        <div class="row">
+            <div class="col-md-4">
+                <div class="card">
+                    <div class="card-header text-center">
+                        <h3 class="mb-0">OPTION</h3>
+                    </div>
+                    <div class="card-body">
+                        <p><a class="nav-link hover-scale" href="@Url.Action("Dashboard", "Inventory")">Dashboard</a></p>
+                        <p><a class="nav-link hover-scale" href="@Url.Action("Campus", "Inventory")">Campus</a></p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-8">
+                <div class="card">
+                    <div class="card-header text-center">
+                        <h1>DASHBOARD</h1>
+                    </div>
+                    <div class="card-body dashboard-content">
+                        <!-- Placeholder content, customize as needed -->
+                        <div class="dashboard-item">
+                            <h4>Recent Activity</h4>
+                            
+                        </div>
+                        <div class="dashboard-item">
+                            <h4>Statistics</h4>
+                            
+                        </div>
+                        <!-- Add more dashboard items as needed -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</body>
+</html>

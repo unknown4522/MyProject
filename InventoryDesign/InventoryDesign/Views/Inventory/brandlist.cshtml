@@ -1,0 +1,204 @@
+﻿@using InventoryDesign.Models;
+@model Modelall
+@{
+    ViewBag.Title = "brandlist";
+}
+
+<div class="container">
+    <h2 class="text-center mt-4">@ViewBag.campus_name</h2>
+    <h2 class="text-center mt-4">Brand List</h2>
+    <div class="row justify-content-center mt-4">
+        <div class="col-md-8">
+            <a class="btn btn-danger custom-button" href="@Url.Action("rooms", "Inventory", new { campus_name = ViewBag.campus_name })" role="button">BACK</a>
+            <button type="button" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#addbrandbtn">ADD</button>
+            <table class="table table-striped">
+                <thead class="thead-dark">
+
+                    <tr>
+                        <th class="text-center">Number</th>
+                        <th class="text-center">Brand Name</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @{
+                        var counter = 1;
+                    }
+                    @foreach (var item in Model.Allbrand)
+                    {
+                        <tr>
+                            <td class="text-center">@counter</td>
+                            <td class="text-center">@item.brandname</td>
+                        </tr>
+                        {
+                            counter++;
+                        }
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<style>
+    /* Move the CSS styles to the top for better organization */
+    h2 {
+        text-align: center;
+    }
+
+    table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-top: 20px;
+    }
+
+    th, td {
+        padding: 10px;
+        text-align: left;
+    }
+
+    th {
+        background-color: #343a40;
+        color: #fff;
+    }
+
+    tr:nth-child(even) {
+        background-color: #f2f2f2;
+    }
+</style>
+<style>
+    /* Custom styling for buttons */
+    .custom-button {
+        background-color: #3498db;
+        color: #fff;
+        border: none;
+        border-radius: 5px;
+        padding: 10px 20px;
+        font-size: 16px;
+        cursor: pointer;
+        transition: background-color 0.3s ease;
+    }
+
+        .custom-button:hover {
+            background-color: #2980b9;
+        }
+
+    /* Style for collapsed content */
+    .collapsed-content {
+        background-color: #f8f9fa;
+        padding: 20px;
+        border: 1px solid #ddd;
+    }
+
+    /* Style for clickable rows */
+    .clickable-row:hover {
+        text-decoration: underline;
+        cursor: pointer;
+        color: #333;
+    }
+
+    /* Center-align text */
+    .center-text {
+        text-align: center;
+    }
+
+    /* Custom CSS for the search box */
+    .search-form {
+        display: flex;
+        justify-content: flex-end;
+        align-items: center;
+    }
+
+    .custom-input {
+        flex-grow: 1;
+        margin-right: 10px;
+    }
+
+    /* Custom styles for the modal */
+    .modal-dialog {
+        max-width: 400px;
+    }
+
+    .modal-header {
+        background-color: #3498db;
+        color: #fff;
+        border-bottom: none;
+    }
+
+    .modal-title {
+        font-size: 24px;
+        text-align: center;
+        margin-bottom: 20px;
+    }
+
+    .modal-body {
+        text-align: left;
+    }
+
+    /* Table styling */
+    .table-striped th {
+        background-color: #3498db;
+        color: #fff;
+    }
+
+    .table-striped tbody tr:nth-child(odd) {
+        background-color: #f8f9fa;
+    }
+</style>
+
+<div class="modal fade" id="addbrandbtn" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h1 class="modal-title fs-5" id="exampleModalLabel">ADD BRANDS</h1>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                    <div class="card">
+                        <div class="card-body">
+                            <div class="form-group">
+                                <label for="add_brand">BRAND NAME:</label>
+                                <input type="text" class="form-control" id="add_brand" name="add_brand" autocomplete="off" required />
+
+
+                                <input type="text" class="form-control visually-hidden" id="add_campus" VALUE="@ViewBag.campus_name" name="add_campus" autocomplete="off" required />
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                        <button class="btn btn-primary" id="addBrandbtn">ADD Brand</button>
+                    </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+<script>
+        $(document).ready(function () {
+            $("#addBrandbtn").click(function () {
+                var add_brand = $("#add_brand").val();
+                var add_campus = $("#add_campus").val();
+
+                var employeedata = {
+                    add_brand: add_brand,
+                    add_campus: add_campus,
+                };
+
+                $.ajax({
+                    type: "POST",
+                    url: "/Inventory/addbrand",
+                    data: employeedata,
+                    success: function () {
+                        location.reload()
+                    },
+                    error: function () {
+                        alert("An error occurred while adding the employee");
+                    },
+                });
+            });
+        });
+</script>
+

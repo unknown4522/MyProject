@@ -1,0 +1,366 @@
+﻿@using InventoryDesign.Models;
+@model Modelall
+@{
+    ViewBag.Title = "insideroom";
+}
+
+
+<div class="dashboard-container">
+    <style>
+        .dashboard-container {
+            margin: 0 auto; /* This centers the div horizontally */
+            width: 100%; /* Adjust the width as needed */
+            padding: 20px; /* Add some padding for spacing */
+        }
+
+        .hover-scale {
+            transition: transform 0.2s; /* Smooth transition for scaling */
+        }
+
+            .hover-scale:hover {
+                transform: scale(1.1); /* Scale up by 10% on hover */
+            }
+    </style>
+    <h1 id="room-label" class="text-center">@ViewBag.campus_name</h1><br />
+    <h2 id="room-label" class="text-center">@ViewBag.room_name</h2><br />
+
+    <button type="button" class="btn btn-sm btn-primary mt-2 custom-button" data-bs-toggle="modal" data-bs-target="#createitems">ADD ITEM</button>
+
+    <div class="card">
+        <div class="card-body" style="color: aqua">
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="table-responsive">
+                        <table class="table table-striped table-bordered text-center table-hover">
+                            <thead>
+                                <tr>
+                                    <th>ITEM NAME</th>
+                                    <th>SERIAL NUMBER</th>
+                                    <th>DATE ARRIVE</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var item in Model.Itemlist.OrderByDescending(item => item.date_now))
+                                {
+                                    <tr class="clickable-row hover-scale" data-bs-toggle="modal" data-bs-target="#detailsModal_@item.item_name.Replace(" ", "_")">
+                                        <td class="center-text">@Html.DisplayFor(modelItem => item.item_name)</td>
+                                        <td>@Html.DisplayFor(modelItem => item.serial_number)</td>
+                                        <td>@Html.DisplayFor(modelItem => item.date_now)</td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@foreach (var item in Model.Itemlist)
+{
+    <div class="modal fade" id="detailsModal_@item.item_name.Replace(" ", "_")" tabindex="-1" aria-labelledby="detailsModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="detailsModalLabel">@Html.DisplayFor(modelItem => item.item_name)</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body text-center">
+                    <strong>MODEL:</strong> @Html.DisplayFor(modelItem => item.model)<br>
+                    <strong>BRAND:</strong> @Html.DisplayFor(modelItem => item.brand)<br>
+                    <strong>ITEM TYPE:</strong> @Html.DisplayFor(modelItem => item.item_type)<br>
+                    <strong>STATUS:</strong> @Html.DisplayFor(modelItem => item.status)<br>
+                    <strong>ROOM NAME:</strong> @Html.DisplayFor(modelItem => item.room_name)<br>
+                    <strong>DEPARTMENT:</strong> @Html.DisplayFor(modelItem => item.department)<br>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-secondary" data-bs-toggle="modal" data-bs-target="#transfer" onclick="setTransfer('@item.serial_number')">Transfer</button>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+
+
+
+<div class="modal fade add-item-modal" id="createitems" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h1 class="modal-title text-center" id="exampleModalLabel">ADD NEW ITEMS</h1>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+
+                <div class="row mb-3">
+                    <div class="col-md-6">
+                        <label for="add_item_name" class="form-label fw-bold">Item Name</label>
+                        <input type="text" class="form-control" id="add_item_name" name="add_item_name" placeholder="Enter item name" autocomplete="off" required />
+                    </div>
+                    <div class="col-md-6">
+                        <label for="add_model" class="form-label fw-bold">Model</label>
+                        <input type="text" class="form-control" id="add_model" name="add_model" placeholder="Enter model" autocomplete="off" required />
+                    </div>
+                </div>
+                <div class="row mb-3">
+                    <div class="col-md-6">
+                        <label for="add_brand" class="form-label fw-bold">Brand</label>
+                        <select class="form-select" id="add_brand" name="add_brand" required>
+                            <option value="" disabled selected hidden>Choose a Brand</option>
+                            @foreach (var brand in Model.Allbrand)
+                            {
+                                <option value="@brand.brandname">@brand.brandname</option>
+                            }
+                        </select>
+                    </div>
+                    <div class="col-md-6">
+                        <label for="add_serial_number" class="form-label fw-bold">Serial Number</label>
+                        <input type="text" class="form-control" id="add_serial_number" name="add_serial_number" placeholder="Enter serial number" autocomplete="off" required />
+                    </div>
+                </div>
+                <div class="row mb-3">
+                    <div class="col-md-6">
+                        <label for="add_item_type" class="form-label fw-bold">Item Type</label>
+                        <select class="form-select" id="add_item_type" name="add_item_type" required>
+                            <option value="" disabled selected hidden>Choose Item Type</option>
+                            <option value="COMPONENT">Component</option>
+                            <option value="EQUIPMENT">Equipment</option>
+                        </select>
+                    </div>
+                    <div class="col-md-6">
+                        <label for="add_item_status" class="form-label fw-bold">Status</label>
+                        <select class="form-select" id="add_item_status" name="add_item_status">
+                            <option value="" disabled selected hidden>Choose Status</option>
+                            <option value="NOT USE">NOT USE</option>
+                            <option value="USE">USE</option>
+                            <option value="BROKEN">BROKEN</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="row mb-3">
+                    <div class="col-md-6">
+                        <label for="add_item_department" class="form-label fw-bold">Department</label>
+                        <select class="form-select" id="add_item_department" name="add_item_department">
+                            <option value="" disabled selected hidden>Choose Department</option>
+                            <option value="H.R.M">H.R.M</option>
+                            <option value="I.T">I.T</option>
+                            <option value="EDUCATION">Education</option>
+                        </select>
+                    </div>
+                    <div class="col-md-6">
+                        <label for="add_date" class="form-label fw-bold">Date Arrive</label>
+                        <input type="datetime-local" class="form-control" id="add_date" name="add_date" autocomplete="off" required />
+                    </div>
+                    <div class="col-md-6">
+
+                        <input type="text" class="form-control visually-hidden" id="add_room" name="add_room" value="@ViewBag.room_name" autocomplete="off" required />
+                    </div>
+
+                    <input type="text" class="form-control visually-hidden" id="add_campus" name="add_campus" value="@ViewBag.campus_name" autocomplete="off" required readonly />
+                </div>
+                <div class="modal-footer text-center">
+                    <button class="btn btn-primary" id="insideroomdataBtn">ADD Campus</button>
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">BACK</button>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+<!-- Error Modal Dialog -->
+<div class="modal fade" id="model_error" tabindex="-1" aria-labelledby="model_errorLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-sm">
+        <div class="modal-content">
+            <div class="modal-header bg-danger text-white">
+                <h5 class="modal-title" id="model_errorLabel">Error</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <p id="error_message"></p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<script>
+    $(document).ready(function () {
+        $("#insideroomdataBtn").click(function () {
+            $("#error_message").text("");
+
+            var add_item_name = $("#add_item_name").val();
+            if (add_item_name === '') {
+                showErrorMessage("Please supply an ITEM NAME.");
+                return;
+            }
+
+            var add_model = $("#add_model").val();
+            if (add_model === '') {
+                showErrorMessage("Please supply an ITEM MODEL.");
+                return;
+            }
+
+            var add_brand = $("#add_brand").val();
+            if (add_brand === null || add_brand === '') {
+                showErrorMessage("Please choose a valid ITEM BRAND.");
+                return;
+            }
+
+            var add_serial_number = $("#add_serial_number").val();
+            if (add_serial_number === '') {
+                showErrorMessage("Please supply an ITEM SERIAL NUMBER.");
+                return;
+            }
+
+            var add_item_type = $("#add_item_type").val();
+            if (add_item_type === null || add_item_type === '') {
+                showErrorMessage("Please choose a valid ITEM TYPE.");
+                return;
+            }
+
+            var add_item_status = $("#add_item_status").val();
+            if (add_item_status === null || add_item_status === '') {
+                showErrorMessage("Please choose a valid ITEM STATUS.");
+                return;
+            }
+
+            var add_item_department = $("#add_item_department").val();
+            if (add_item_department === null || add_item_department === '') {
+                showErrorMessage("Please choose a valid ITEM DEPARTMENT.");
+                return;
+            }
+
+            var add_date = $("#add_date").val();
+            if (add_date === '') {
+                showErrorMessage("Please choose a valid DATE.");
+                return;
+            }
+
+            var add_room = $("#add_room").val();
+            if (add_room === null || add_room === '') {
+                showErrorMessage("Please choose a valid ROOM NAME.");
+                return;
+            }
+
+            var add_campus = $("#add_campus").val();
+            if (add_campus === '') {
+                showErrorMessage("Please supply a CAMPUS NAME.");
+                return;
+            }
+
+            var insideroomdata = {
+                add_item_name: add_item_name,
+                add_model: add_model,
+                add_brand: add_brand,
+                add_serial_number: add_serial_number,
+                add_item_type: add_item_type,
+                add_item_status: add_item_status,
+                add_item_department: add_item_department,
+                add_date: add_date,
+                add_room: add_room,
+                add_campus: add_campus
+            };
+
+            $.ajax({
+                type: "POST",
+                url: "/Inventory/createitems",
+                data: insideroomdata,
+                success: function () {
+                    location.reload();
+                },
+                error: function () {
+                    showErrorMessage("An error occurred while adding the claim item");
+                }
+            });
+        });
+
+        function showErrorMessage(message) {
+            $("#error_message").text(message);
+            $("#model_error").modal("show");
+        }
+    });
+
+</script>
+
+
+
+
+@* TRANSFER MODAL *@
+
+<div class="modal fade" id="transfer" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">TRANSFER TO:</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                @using (Html.BeginForm("transfer", "Inventory", FormMethod.Post))
+                {
+                    <div class="card">
+                        <div class="card-body">
+                            <div class="form-group">
+                                <label for="transfer_serial_no">SERIAL NUMBER:</label>
+                                <input type="text" class="form-control" id="transfer_serial_no" name="transfer_serial_no" autocomplete="off" required readonly />
+                            </div>
+
+                            <div class="form-group">
+                                <label for="transfer_room_name">TRANSFER TO:</label>
+                                <select class="form-control" id="transfer_room_name" name="transfer_room_name" autocomplete="off">
+                                    @foreach (var item in Model.Roomlist)
+                                    {
+                                        <option value="@item.room_name">@item.room_name</option>
+                                    }
+                                </select>
+                                <div class="form-group">
+                                    <label for="transfer_requested_by">REQUESTED BY</label>
+                                    <select class="form-control" id="transfer_requested_by" name="transfer_requested_by" autocomplete="off" required>
+                                        @foreach (var item in Model.Allemployee)
+                                        {
+                                            <option value="@item.employee_name">@item.employee_name</option>
+                                        }
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label for="transfer_by">TRANSFER BY</label>
+                                    <select class="form-control" id="transfer_by" name="transfer_by" autocomplete="off" required>
+                                        @foreach (var item in Model.Allemployee)
+                                        {
+                                            <option value="@item.employee_name">@item.employee_name</option>
+                                        }
+                                    </select>
+                                </div>
+
+                                <div class="form-group">
+
+                                    <input type="text" class="form-control visually-hidden" id="transfer_campus_name" value="@ViewBag.campus_name" name="transfer_campus_name" autocomplete="off" required readonly />
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button class="btn btn-primary" onclick="checkinputtransfer()">PROCEED</button>
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">BACK</button>
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    function setTransfer(serialNumber) {
+        var transferSerialNoInput = document.getElementById("transfer_serial_no");
+        transferSerialNoInput.value = serialNumber;
+    }
+</script>
+

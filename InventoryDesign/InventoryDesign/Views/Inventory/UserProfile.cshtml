@@ -1,0 +1,59 @@
+﻿@using InventoryDesign.Models
+@model Modelall
+@{
+    ViewBag.Title = "UserProfile";
+}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        .custom-size {
+            width: 100px; /* Adjust width as needed */
+            height: 100px; /* Adjust height as needed */
+            border-radius: 50%; /* Make the image circular */
+            object-fit: cover; /* Maintain aspect ratio and cover the entire container */
+            margin-bottom: 15px; /* Add some space between the image and the heading */
+        }
+
+        .card {
+            margin-bottom: 20px; /* Add space between cards */
+        }
+    </style>
+    <title>Your Page Title</title>
+</head>
+<body>
+
+    <div class="container mt-4">
+        <h1 class="text-center mt-4">Profile</h1>
+
+        <div class="row">
+            <div class="col-md-4">
+                <div class="card">
+                    <div class="card-header text-center">
+                        <img src="~/Content/Profile Icon.jpg" alt="Profile Image" class="custom-size" />
+                        <h3 class="mb-0">Hello</h3>
+                    </div>
+                    <div class="card-body">
+                        <p class="mb-0">About</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-8">
+                <div class="card">
+                    <div class="card-header">
+                        Dashboard
+                    </div>
+                    <div class="card-body">
+                        <!-- Add your dashboard content here -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</body>
+</html>
+
